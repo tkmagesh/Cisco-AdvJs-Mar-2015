@@ -1,6 +1,20 @@
 //create an object "spinner"
 
-var spinner = //.....
+function getSpinner(){
+    var count = 0;
+    function increment(){
+        return ++count;
+    }
+    function decrement(){
+        return --count;
+    }
+    var obj = {
+        up : increment,
+        down : decrement
+    };
+    return obj;
+}
+var spinner = getSpinner();
 
 //"spinner" should exhibit the following behavior
 
