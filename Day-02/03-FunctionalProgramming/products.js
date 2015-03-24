@@ -199,8 +199,9 @@ print("Group By", function(){
        var result = {};
        for(var i = 0; i<list.length; i++){
            var key = keySelectorFn(list[i]);
-           if (typeof result[key] === "undefined")
-               result[key] = [];
+          /* if (typeof result[key] === "undefined")
+               result[key] = [];*/
+           result[key] = result[key] || [];
            result[key].push(list[i]);
        }
        return result;
@@ -224,5 +225,20 @@ print("Group By", function(){
     });
 });
 
+
+function after(count, fn){
+    var cnt = 0;
+    return function(){
+        if (++cnt >= count)
+            return fn.apply(this,arguments);
+    }
+};
+
+function bind(fn, thisObj){
+    var args = Array.prototype.slice.call(arguments,2);
+    return function(){
+        return fn.apply(thisObj, args || arguments);
+    }
+}
 
 
