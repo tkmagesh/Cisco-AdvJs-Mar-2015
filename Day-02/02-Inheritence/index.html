@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .highlight{
+            border : 2px solid red;
+        }
+    </style>
+    <script src="jquery-1.11.2.js"></script>
+    <script>
+    $.fn.highlight = function(){
+        $(this).addClass("highlight");
+    };
+    $.clear = function(){
+        $("*").removeClass("highlight");
+    }
+    </script>
+</head>
+<body>
+    <input type="text" name="" id="firstName" class="nameBox">
+    <input type="text" name="" id="LastName" class="nameBox">
+    <input type="button" value="Greet">
+    <div id="divMessage">[Greet Message will be displayed here]</div>
+</body>
+</html>
