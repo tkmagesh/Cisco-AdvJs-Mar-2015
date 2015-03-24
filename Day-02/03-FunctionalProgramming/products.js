@@ -82,20 +82,147 @@ print("Sort", function(){
 });
 
 //filter
+print("Filter", function(){
+    function filter(list, criteriaFn){
+        var result = [];
+        for(var i=0; i< list.length; i++)
+            if (criteriaFn(list[i]))
+                result.push(list[i]);
+        return result;
+    }
+    function inverse(originalCriteria){
+        return function(){
+            return !originalCriteria.apply(this,arguments);
+        }
+    }
+    var costlyProductCriteria = function(product){
+        return product.cost > 50;
+    };
+    /*var affordableProductCriteria = function(product){
+        //return product.cost <= 50;
+        return !costlyProductCriteria(product);
 
+    };*/
+    var affordableProductCriteria = inverse(costlyProductCriteria);
+
+    print("All costly products", function(){
+
+        var costlyProducts = filter(products,costlyProductCriteria);
+        console.table(costlyProducts);
+    });
+    print("All affordable products", function(){
+        var affordableProducts = filter(products, affordableProductCriteria);
+        console.table(affordableProducts);
+    });
+    print("All category - 1 products", function(){
+        var Category1ProductCriteria = function(product){
+            return product.category === 1;
+        }
+        var category1Products = filter(products,Category1ProductCriteria);
+        console.table(category1Products);
+    });
+});
 //every
-
+print("Every", function(){
+    function every(list, predicateFn){
+        for(var i=0; i<list.length; i++)
+            if (!predicateFn(list[i]))
+                return false;
+        return true;
+    }
+    var costlyProductCriteria = function(product){
+        return product.cost > 50;
+    };
+    var areAllProductsCostly = every(products, costlyProductCriteria);
+    console.log("Are all products costly?", areAllProductsCostly);
+});
 //some
-
+print("Some", function(){
+    function some(list, predicateFn){
+        for(var i=0; i<list.length; i++)
+            if (predicateFn(list[i]))
+                return true;
+        return false;
+    }
+    var costlyProductCriteria = function(product){
+        return product.cost > 50;
+    };
+    var areThereAnyCostlyProducts = some(products, costlyProductCriteria);
+    console.log("Are there any costly products?", areThereAnyCostlyProducts);
+});
 //min
-
+print("Min", function(){
+    function min(list, valueSelector){
+        var result = valueSelector(list[0]);
+        for(var i=1; i<list.length; i++){
+            var currentValue = valueSelector(list[i]);
+            if (result > currentValue)
+                result = currentValue;
+        }
+        return result;
+    }
+    var costSelector = function(p){
+        return p.cost;
+    }
+    var minCost = min(products, costSelector);
+    console.log("Minimum Cost = ", minCost);
+});
 //max
 
 //sum
 
 //aggregate
+print("Aggregate", function(){
+    function aggregate(list, aggregatorFn, seed){
+        var result = seed;
+        for(var i=0; i<list.length; i++){
+            result = aggregatorFn(result, list[i]);
+        }
+        return result;
+    };
+    var unitsAggregator = function(prevResult, product){
+        return prevResult + product.units;
+    }
+    var sumOfUnits = aggregate(products, unitsAggregator, 0);
+    console.log("Sum of units = ", sumOfUnits);
+
+    var minCostAggregator = function(prevResult, product){
+        return prevResult < product.cost ? prevResult : product.cost;
+    };
+    var minOfCost = aggregate(products, minCostAggregator, products[0].cost);
+    console.log("Min cost = ", minOfCost);
+});
 
 //groupBy
+print("Group By", function(){
+   function groupBy(list, keySelectorFn){
+       var result = {};
+       for(var i = 0; i<list.length; i++){
+           var key = keySelectorFn(list[i]);
+           if (typeof result[key] === "undefined")
+               result[key] = [];
+           result[key].push(list[i]);
+       }
+       return result;
+   }
+    var categoryKeySelector = function(product){
+        return product.category;
+    };
+    var productsGroupedByCategory = groupBy(products, categoryKeySelector);
+    console.log(productsGroupedByCategory);
+
+    var costBasedKeySelector = function(product){
+        return product.cost > 50 ? "costly" : "affordable";
+    }
+    var productsGroupedByCost = groupBy(products, costBasedKeySelector);
+    print("Grouped By Cost", function(){
+        for(var key in productsGroupedByCost){
+            print("Key = " + key, function(){
+                console.table(productsGroupedByCost[key]);
+            });
+        }
+    });
+});
 
 
 
